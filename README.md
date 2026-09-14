@@ -1,8 +1,8 @@
 <div align="center">
 
-# 📦 StockLiso
+#  StockLiso
 
-### Sistema Integral de Inventario Cerámico, Gestión Multi-Tienda y Punto de Venta (POS)
+### Sistema Integral de Inventario Cerámico, Gestión Multi-Tienda y Registro simple de tiendas
 
 [![React](https://img.shields.io/badge/React-19.2-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
 [![Vite](https://img.shields.io/badge/Vite-8.1-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
@@ -11,62 +11,19 @@
 [![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](LICENSE)
 
 <p align="center">
-  <b>Plataforma web empresarial para el control de inventario en tiempo real, facturación y gestión multi-sucursal de materiales cerámicos, listelos y acabados.</b>
+  <b>Plataforma web  para el control de inventario en tiempo real, facturación y gestión multi-sucursal de materiales cerámicos, listelos y acabados.</b>
 </p>
 
 </div>
 
 ---
 
-## 🌟 Descripción General
+## Descripción General
 
-**StockLiso** es una solución tecnológica completa diseñada para resolver las complejidades operativas en empresas de distribución y venta de acabados cerámicos (listelos, decorados, porcelanatos). Combina un **Punto de Venta (POS)** ágil, gestión de **clientes detallados**, sincronización reactiva **multi-tienda**, transacciones atómicas **ACID** y una sólida arquitectura de **ciberseguridad basada en OWASP**.
-
----
-
-## 🚀 Características Principales
-
-### 🛒 1. Punto de Venta (POS) & Gestión de Clientes
-
-- **Detalle de Clientes Completo**: Selección rápida entre _Público General (Venta Mostrador)_, clientes registrados o registro de _Nuevo Cliente_ en caliente (Razón Social, DNI/RUC, Teléfono/WhatsApp).
-- **Persistencia y Autocompletado**: Los datos del cliente quedan guardados en el registro de la venta en Firestore y en la colección de clientes para futuras transacciones.
-- **Descuento de Stock Multi-Origen**: Posibilidad de vender productos despachando el stock desde distintas sucursales dentro del mismo pedido.
-- **Compresión de Comprobantes en Cliente**: Procesamiento y compresión automática de comprobantes de pago (JPG, PNG, WebP) a Base64, permitiendo adjuntar imágenes sin costos adicionales de buckets externos.
-
-### 🏬 2. Control de Inventario Multi-Tienda con Consistencia ACID
-
-- **Transacciones Atómicas Firestore**: Prevención absoluta de _race conditions_ y sobreventa mediante transacciones atómicas en base de datos.
-- **Métricas por Sucursal**: Stock individualizado y consolidado en piezas (`pz`) y cajas (`cj`), cálculo de valorización de inventario e indicadores visuales de desabastecimiento (≤25%).
-- **Reposición y Ajustes de Almacén**: Registro de ingresos y reposiciones por tienda con cálculo automático de porcentajes globales.
-
-### 📄 3. Buscadores Reactivos y Paginación Uniforme (15 en 15)
-
-- **Componente Reutilizable (`Pagination.jsx`)**: Paginación accesible y responsive de **15 en 15 elementos** integrada de manera uniforme en todos los módulos:
-  - **Stock & Productos**: Tabla desktop y tarjetas móviles paginadas con indicador _"Mostrando X–Y de Z productos"_.
-  - **Usuarios**: Buscador por nombre, email, rol o tienda con paginación de 15 en 15.
-  - **Tiendas**: Buscador por nombre o dirección con paginación de 15 en 15.
-  - **Transacciones**: Búsqueda por folio, producto, tienda o nombre de cliente con paginación de 15 en 15.
-  - **Catálogo de Ventas**: Navegación ágil por el catálogo de productos disponibles para venta.
-- **Reinicio Automático**: Cualquier búsqueda o cambio de filtro reinicia reactivamente a la página 1.
-
-### 📊 4. Dashboard Analítico en Tiempo Real
-
-- **Métricas Clave (KPIs)**: Stock total, valorización total de activos (S/.), ventas semanales acumuladas y contador de productos críticos.
-- **Gráfico Semanal Dinámico**: Historial visual interactivo de los últimos 7 días con tooltips informativos y detección del mejor día de ventas.
-- **Buscador Rápido de Stock**: Acceso instantáneo a las existencias de cualquier producto sin salir del panel principal.
-
-### 🔄 5. Auditoría y Reversión Atómica de Operaciones
-
-- **Historial Unificado**: Registro cronológico de todas las ventas y entradas de inventario.
-- **Anulación Reversible (Rollback)**: Los administradores pueden anular ventas o ingresos con un solo clic; el sistema reintegra o descuenta automáticamente el stock en las tiendas correspondientes de forma transaccional.
-
-### 👥 6. Control de Acceso Basado en Roles (RBAC)
-
-- **Roles Definidos**: _Administrador_, _Vendedor_, _Almacenista_ y _Solo lectura_.
-- **Gestión Segura de Cuentas**: Creación de nuevos usuarios mediante instancia secundaria de Firebase Auth, evitando desconectar la sesión activa del administrador.
-- **Revocación de Sesión en Tiempo Real**: Si un usuario es desactivado por un administrador, su sesión se cierra inmediatamente en el navegador gracias a listeners reactivos.
+**StockLiso** es un proyecto sencillo para resolver las complejidades operativas en una empresa de distribución y venta de acabados cerámicos (listelos, decorados, porcelanatos) que lo solicito. Se diseño el sistema a base de sus necesidades y facil uso para tener rapida adopción. 
 
 ---
+
 
 ## 🛠️ Stack Tecnológico
 
