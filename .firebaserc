@@ -1,0 +1,8 @@
+{
+  "projects": {
+    "default": "stockliso-dev",
+    "production": "stockliso-prod"
+  },
+  "targets": {},
+  "etags": {}
+}

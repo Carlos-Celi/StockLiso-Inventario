@@ -1,0 +1,122 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper: Autenticación básica
+    function isAuth() {
+      return request.auth != null;
+    }
+
+    // Helper: Verificar existencia de documento de usuario
+    function hasUserDoc() {
+      return isAuth() && exists(/databases/$(database)/documents/usuarios/$(request.auth.uid));
+    }
+
+    // Helper: Obtener datos de usuario autenticado
+    function getUserData() {
+      return get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data;
+    }
+
+    // Helper: Usuario activo en el sistema
+    function isActive() {
+      return hasUserDoc() && getUserData().activo == true;
+    }
+
+    // Helper: Rol de usuario
+    function getUserRol() {
+      return getUserData().rol;
+    }
+
+    function isAdmin() {
+      return isActive() && getUserRol() == 'Administrador';
+    }
+
+    function isAlmacenista() {
+      return isActive() && getUserRol() == 'Almacenista';
+    }
+
+    function isVendedorOrAbove() {
+      return isActive() && getUserRol() in ['Administrador', 'Vendedor', 'Almacenista'];
+    }
+
+    // ── PRODUCTOS ──────────────────────────────────────────
+    // OWASP A01: Principio de mínimo privilegio y validación de esquema
+    match /productos/{docId} {
+      allow read: if isActive();
+
+      // Creación: Solo Administrador y Almacenista
+      allow create: if (isAdmin() || isAlmacenista())
+                    && request.resource.data.nombre is string
+                    && request.resource.data.nombre.size() > 0
+                    && request.resource.data.nombre.size() <= 120
+                    && request.resource.data.precioPz is number
+                    && request.resource.data.precioPz >= 0
+                    && request.resource.data.precioCaja is number
+                    && request.resource.data.precioCaja >= 0
+                    && request.resource.data.pctStock is number
+                    && request.resource.data.pctStock >= 0
+                    && request.resource.data.pctStock <= 100;
+
+      // Actualización: Admin/Almacenista pueden editar todo. Vendedor solo puede actualizar stock tras una venta.
+      allow update: if (isAdmin() || isAlmacenista())
+                    || (isVendedorOrAbove() 
+                        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['stock', 'pctStock', 'actualizadoEn'])
+                        && request.resource.data.pctStock is number
+                        && request.resource.data.pctStock >= 0
+                        && request.resource.data.pctStock <= 100);
+
+      // Eliminación: Solo Administrador
+      allow delete: if isAdmin();
+    }
+
+    // ── VENTAS ─────────────────────────────────────────────
+    // OWASP A01/A04: Evitar manipulación de precios negativos o suplantación de identidad
+    match /ventas/{docId} {
+      allow read: if isActive();
+      allow create: if isVendedorOrAbove()
+                    && request.resource.data.total is number
+                    && request.resource.data.total >= 0
+                    && request.resource.data.registradoPor == request.auth.uid
+                    && request.resource.data.productos is list
+                    && request.resource.data.productos.size() > 0;
+      allow update, delete: if isAdmin();
+    }
+
+    // ── REPOSICIONES ───────────────────────────────────────
+    match /reposiciones/{docId} {
+      allow read: if isActive();
+      allow create: if (isAdmin() || isAlmacenista())
+                    && request.resource.data.cantidad is number
+                    && request.resource.data.cantidad > 0
+                    && request.resource.data.unidad in ['pz', 'cj'];
+      allow update, delete: if isAdmin();
+    }
+
+    // ── USUARIOS ───────────────────────────────────────────
+    match /usuarios/{uid} {
+      allow read: if isAuth() && (request.auth.uid == uid || isAdmin());
+      allow write: if isAdmin()
+                   && request.resource.data.rol in ['Administrador', 'Vendedor', 'Almacenista', 'Solo lectura']
+                   && request.resource.data.nombre is string
+                   && request.resource.data.nombre.size() > 0;
+    }
+
+    // ── TIENDAS ────────────────────────────────────────────
+    match /tiendas/{docId} {
+      allow read: if isActive();
+      allow write: if isAdmin()
+                   && request.resource.data.nombre is string
+                   && request.resource.data.nombre.size() > 0;
+    }
+
+    // ── CLIENTES ───────────────────────────────────────────
+    match /clientes/{docId} {
+      allow read: if isActive();
+      allow create, update: if isVendedorOrAbove()
+                   && request.resource.data.nombre is string
+                   && request.resource.data.nombre.size() > 0
+                   && request.resource.data.nombre.size() <= 120;
+      allow delete: if isAdmin();
+    }
+  }
+}

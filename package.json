@@ -1,0 +1,26 @@
+{
+  "name": "stockliso",
+  "version": "1.0.0",
+  "description": "StockLiso - Sistema de Inventario Cerámico",
+  "main": "seed.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "seed": "node seed.js",
+    "docker:up": "docker-compose up --build -d",
+    "docker:down": "docker-compose down"
+  },
+  "dependencies": {
+    "firebase": "^12.15.0",
+    "firebase-admin": "^12.1.0",
+    "lucide-react": "^1.23.0",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^6.0.3",
+    "firebase-tools": "^15.22.4",
+    "vite": "^8.1.3"
+  }
+}
